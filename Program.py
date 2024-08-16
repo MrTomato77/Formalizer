@@ -8,7 +8,7 @@ import pyperclip
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
-Path = r".\Sorted_Thai_Word.csv"
+Path = r".\src\Sorted_Thai_Word.csv"
 
 # Word reader
 word_map = {}
