@@ -1,0 +1,5 @@
+tk
+pythainlp
+spacy_thai
+pyperclip
+python-crfsuite
