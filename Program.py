@@ -62,13 +62,13 @@ root.title("ภาษาพูดเป็นภาษาทางการ")
 # input text area
 input_text_label = tk.Label(root, text="Input Text:")
 input_text_label.grid(row=0, column=0, sticky="w")
-input_text_area = scrolledtext.ScrolledText(root, width=100, height=6, font=(12))
+input_text_area = scrolledtext.ScrolledText(root, width=100, height=6, font=(20))
 input_text_area.grid(row=1, column=0, columnspan=2, padx=10, pady=5)
 
 # output text area
 output_text_label = tk.Label(root, text="Output Text:")
 output_text_label.grid(row=2, column=0, sticky="w")
-output_text_area = scrolledtext.ScrolledText(root, width=100, height=6, font=(12))
+output_text_area = scrolledtext.ScrolledText(root, width=100, height=6, font=(20))
 output_text_area.grid(row=3, column=0, columnspan=2, padx=10, pady=5)
 
 # buttons
