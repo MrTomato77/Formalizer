@@ -1,5 +1,6 @@
 import streamlit as st
 import csv
+import os
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
@@ -7,17 +8,26 @@ import pyperclip
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
-Path = "src\Sorted_Thai_Word.csv"
 
-# Word reader
+# Define the file path
+file_path = os.path.join('src', 'Sorted_Thai_Word.csv')
+
+# Initialize word map
 word_map = {}
-with open(Path, 'r', encoding='utf-8') as read_file:
-    reader = csv.reader(read_file)
-    for row in reader:
-        if len(row) >= 2:
-            word_map[row[0]] = row[1]
-        else:
-            print("Skipping invalid row:", row)
+
+# Load the word map from the CSV file
+try:
+    with open(file_path, 'r', encoding='utf-8') as read_file:
+        reader = csv.reader(read_file)
+        for row in reader:
+            if len(row) >= 2:
+                word_map[row[0]] = row[1]
+            else:
+                print("Skipping invalid row:", row)
+except FileNotFoundError:
+    st.error(f"File not found: {file_path}")
+except Exception as e:
+    st.error(f"An error occurred while reading the file: {str(e)}")
 
 # Word replacing function
 def replace_words(text):
@@ -25,10 +35,7 @@ def replace_words(text):
     replaced_sentences = []
     for sentence in sentences:
         tokens = word_tokenize(sentence, engine='newmm')
-        replaced_tokens = []
-        for token in tokens:
-            replaced_word = word_map.get(token, token)
-            replaced_tokens.append(replaced_word)
+        replaced_tokens = [word_map.get(token, token) for token in tokens]
         replaced_sentence = ''.join(replaced_tokens)
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
@@ -46,15 +53,15 @@ with col1:
     # Convert text
     if st.button("เปลี่ยนคำ"):
         if input_text.strip() == "":
-            st.toast("กรุณาใส่ข้อความ")
+            st.warning("กรุณาใส่ข้อความ")
         else:
             try:
                 new_text = replace_words(input_text)
                 newer_text = arabic_digit_to_thai_digit(new_text)
                 st.session_state.output_text = newer_text
-                st.toast("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
+                st.success("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
             except Exception as e:
-                st.toast(f"An error occurred: {str(e)}", type="error")
+                st.error(f"An error occurred: {str(e)}")
 
 # Initialize session state
 if 'output_text' not in st.session_state:
@@ -68,6 +75,6 @@ with col2:
     if st.button("คัดลอก"):
         pyperclip.copy(st.session_state.output_text)  # Copy the output text (even if empty)
         if st.session_state.output_text.strip():
-            st.toast("คัดลอกข้อความสำเร็จ")
+            st.success("คัดลอกข้อความสำเร็จ")
         else:
-            st.toast("ไม่มีข้อความที่จะคัดลอก")
+            st.warning("ไม่มีข้อความที่จะคัดลอก")
