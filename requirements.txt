@@ -4,3 +4,4 @@ spacy_thai
 pyperclip
 python-crfsuite
 streamlit
+numpy
