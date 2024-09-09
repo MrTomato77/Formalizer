@@ -2,3 +2,4 @@ _Docs
 venv
 tempCodeRunnerFile.py
 pythainlp/__pycache__
+*.pyc
