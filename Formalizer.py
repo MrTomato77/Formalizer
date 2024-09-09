@@ -66,12 +66,6 @@ with col1:
 if 'output_text' not in st.session_state:
     st.session_state.output_text = ""  # Initialize as an empty string
 
-# Output text area and Copy button on the right (col2)
+# Output text area on the right (col2)
 with col2:
     st.text_area("Output Text:", value=st.session_state.output_text, height=300)
-
-    # Use st.code to display the output in a code block with copy option
-    if st.session_state.output_text.strip():
-        st.code(st.session_state.output_text, language="text")
-    else:
-        st.toast("ไม่มีข้อความที่จะคัดลอก")
