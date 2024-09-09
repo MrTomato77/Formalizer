@@ -4,6 +4,7 @@ import os
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
+from jaraco.clipboard import copy
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
@@ -72,13 +73,11 @@ with col2:
 
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
-        # Use JavaScript to copy text to clipboard
-        st.markdown(f"""
-            <script>
-            navigator.clipboard.writeText({repr(st.session_state.output_text)});
-            </script>
-        """, unsafe_allow_html=True)
-        if st.session_state.output_text.strip():
-            st.toast("คัดลอกข้อความสำเร็จ")
-        else:
-            st.toast("ไม่มีข้อความที่จะคัดลอก")
+        try:
+            copy(st.session_state.output_text)  # Copy the output text
+            if st.session_state.output_text.strip():
+                st.toast("คัดลอกข้อความสำเร็จ")
+            else:
+                st.toast("ไม่มีข้อความที่จะคัดลอก")
+        except Exception as e:
+            st.toast(f"An error occurred with clipboard: {str(e)}")
