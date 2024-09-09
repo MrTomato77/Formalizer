@@ -4,4 +4,4 @@ spacy_thai
 pyperclip
 python-crfsuite
 streamlit
-numpy
+numpy==1.26.4
