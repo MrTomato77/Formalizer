@@ -25,9 +25,9 @@ try:
             else:
                 print("Skipping invalid row:", row)
 except FileNotFoundError:
-    st.error(f"File not found: {file_path}")
+    st.toast(f"File not found: {file_path}")
 except Exception as e:
-    st.error(f"An error occurred while reading the file: {str(e)}")
+    st.toast(f"An error occurred while reading the file: {str(e)}")
 
 # Word replacing function
 def replace_words(text):
@@ -54,15 +54,15 @@ with col1:
     # Convert text
     if st.button("เปลี่ยนคำ"):
         if input_text.strip() == "":
-            st.warning("กรุณาใส่ข้อความ")
+            st.toast("กรุณาใส่ข้อความ")
         else:
             try:
                 new_text = replace_words(input_text)
                 newer_text = arabic_digit_to_thai_digit(new_text)
                 st.session_state.output_text = newer_text
-                st.success("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
+                st.toast("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
             except Exception as e:
-                st.error(f"An error occurred: {str(e)}")
+                st.toast(f"An error occurred: {str(e)}")
 
 # Initialize session state
 if 'output_text' not in st.session_state:
@@ -76,6 +76,6 @@ with col2:
     if st.button("คัดลอก"):
         pyperclip.copy(st.session_state.output_text)  # Copy the output text (even if empty)
         if st.session_state.output_text.strip():
-            st.success("คัดลอกข้อความสำเร็จ")
+            st.toast("คัดลอกข้อความสำเร็จ")
         else:
-            st.warning("ไม่มีข้อความที่จะคัดลอก")
+            st.toast("ไม่มีข้อความที่จะคัดลอก")
