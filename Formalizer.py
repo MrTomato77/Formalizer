@@ -1,7 +1,7 @@
 import streamlit as st
 import csv
 import os
-import platform
+import pandas as pd
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
@@ -40,19 +40,6 @@ def replace_words(text):
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
 
-# Function to add text to clipboard
-def add_to_clipboard(text):
-    system = platform.system()
-    if system == 'Windows':
-        command = f'echo {text.strip()} | clip'
-    elif system == 'Darwin':  # macOS
-        command = f'echo {text.strip()} | pbcopy'
-    elif system == 'Linux':
-        command = f'echo {text.strip()} | xclip -selection clipboard'
-    else:
-        raise RuntimeError("Unsupported operating system")
-    os.system(command)
-
 # Streamlit app
 st.title("ภาษาพูดเป็นภาษาทางการ")
 
@@ -87,7 +74,9 @@ with col2:
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
         try:
-            add_to_clipboard(st.session_state.output_text)  # Copy the output text (even if empty)
+            # Copy using pandas
+            df = pd.DataFrame([st.session_state.output_text])
+            df.to_clipboard(index=False, header=False)
             if st.session_state.output_text.strip():
                 st.toast("คัดลอกข้อความสำเร็จ")
             else:
