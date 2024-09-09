@@ -1,7 +1,6 @@
 import streamlit as st
 import csv
 import os
-import pandas as pd
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
@@ -26,9 +25,9 @@ try:
             else:
                 print("Skipping invalid row:", row)
 except FileNotFoundError:
-    st.toast(f"File not found: {file_path}")
+    st.toast("File not found: " + file_path)
 except Exception as e:
-    st.toast(f"An error occurred while reading the file: {str(e)}")
+    st.toast("An error occurred while reading the file: " + str(e))
 
 # Word replacing function
 def replace_words(text):
@@ -41,18 +40,10 @@ def replace_words(text):
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
 
-# Copy function
-def copy_to_clipboard(text):
-    try:
-        # Adjust the command based on the OS
-        if os.name == 'posix':
-            if 'darwin' in os.uname().sysname.lower():
-                subprocess.run("pbcopy", text=True, input=text, check=True)
-        else:
-            subprocess.run("clip", text=True, input=text, check=True, shell=True)
-        return "ข้อความถูกคัดลอก"
-    except subprocess.CalledProcessError as e:
-        return f"An error occurred with clipboard: {str(e)}"
+# Clipboard function using subprocess
+def add_to_clipboard(text):
+    command = f'echo "{text.strip()}" | xclip -selection clipboard'
+    subprocess.run(command, shell=True)
 
 # Streamlit app
 st.title("ภาษาพูดเป็นภาษาทางการ")
@@ -75,7 +66,7 @@ with col1:
                 st.session_state.output_text = newer_text
                 st.toast("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
             except Exception as e:
-                st.toast(f"An error occurred: {str(e)}")
+                st.toast("An error occurred: " + str(e))
 
 # Initialize session state
 if 'output_text' not in st.session_state:
@@ -87,5 +78,11 @@ with col2:
 
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
-        result = copy_to_clipboard(st.session_state.output_text)
-        st.toast(result)
+        try:
+            add_to_clipboard(st.session_state.output_text)  # Copy the output text (even if empty)
+            if st.session_state.output_text.strip():
+                st.toast("คัดลอกข้อความสำเร็จ")
+            else:
+                st.toast("ไม่มีข้อความที่จะคัดลอก")
+        except Exception as e:
+            st.toast(f"An error occurred with clipboard: {str(e)}")
