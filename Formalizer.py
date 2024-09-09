@@ -70,26 +70,8 @@ if 'output_text' not in st.session_state:
 with col2:
     st.text_area("Output Text:", value=st.session_state.output_text, height=300)
 
-    # Copy to clipboard button using JavaScript
-    if st.button("คัดลอก"):
-        try:
-            # Use JavaScript to copy text to the clipboard
-            js_code = f"""
-            <script>
-            function copyToClipboard(text) {{
-                navigator.clipboard.writeText(text).then(function() {{
-                    console.log('Copied to clipboard');
-                }}, function(err) {{
-                    console.error('Could not copy text: ', err);
-                }});
-            }}
-            copyToClipboard(`{st.session_state.output_text}`);
-            </script>
-            """
-            st.components.v1.html(js_code)
-            if st.session_state.output_text.strip():
-                st.toast("คัดลอกข้อความสำเร็จ")
-            else:
-                st.toast("ไม่มีข้อความที่จะคัดลอก")
-        except Exception as e:
-            st.toast(f"An error occurred with clipboard: {str(e)}")
+    # Use st.code to display the output in a code block with copy option
+    if st.session_state.output_text.strip():
+        st.code(st.session_state.output_text, language="text")
+    else:
+        st.toast("ไม่มีข้อความที่จะคัดลอก")
