@@ -1,6 +1,7 @@
 import streamlit as st
 import csv
 import os
+import platform
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
@@ -41,7 +42,15 @@ def replace_words(text):
 
 # Function to add text to clipboard
 def add_to_clipboard(text):
-    command = f'echo {text.strip()} | clip'
+    system = platform.system()
+    if system == 'Windows':
+        command = f'echo {text.strip()} | clip'
+    elif system == 'Darwin':  # macOS
+        command = f'echo {text.strip()} | pbcopy'
+    elif system == 'Linux':
+        command = f'echo {text.strip()} | xclip -selection clipboard'
+    else:
+        raise RuntimeError("Unsupported operating system")
     os.system(command)
 
 # Streamlit app
