@@ -5,6 +5,7 @@ import pandas as pd
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
+import subprocess
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
@@ -40,6 +41,21 @@ def replace_words(text):
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
 
+# Copy function
+def copy_to_clipboard(text):
+    try:
+        # Adjust the command based on the OS
+        if os.name == 'posix':
+            if 'darwin' in os.uname().sysname.lower():
+                subprocess.run("pbcopy", text=True, input=text, check=True)
+            else:
+                subprocess.run("xclip -selection clipboard", text=True, input=text, shell=True, check=True)
+        else:
+            subprocess.run("clip", text=True, input=text, check=True, shell=True)
+        return "ข้อความถูกคัดลอก"
+    except subprocess.CalledProcessError as e:
+        return f"An error occurred with clipboard: {str(e)}"
+
 # Streamlit app
 st.title("ภาษาพูดเป็นภาษาทางการ")
 
@@ -73,13 +89,5 @@ with col2:
 
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
-        try:
-            # Copy using pandas
-            df = pd.DataFrame([st.session_state.output_text])
-            df.to_clipboard(index=False, header=False)
-            if st.session_state.output_text.strip():
-                st.toast("คัดลอกข้อความสำเร็จ")
-            else:
-                st.toast("ไม่มีข้อความที่จะคัดลอก")
-        except Exception as e:
-            st.toast(f"An error occurred with clipboard: {str(e)}")
+        result = copy_to_clipboard(st.session_state.output_text)
+        st.toast(result)
