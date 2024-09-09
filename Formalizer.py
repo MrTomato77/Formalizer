@@ -4,7 +4,6 @@ import os
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
-import pyclip
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
@@ -25,9 +24,9 @@ try:
             else:
                 print("Skipping invalid row:", row)
 except FileNotFoundError:
-    st.toast("File not found: " + file_path)
+    st.toast(f"File not found: {file_path}")
 except Exception as e:
-    st.toast("An error occurred while reading the file: " + str(e))
+    st.toast(f"An error occurred while reading the file: {str(e)}")
 
 # Word replacing function
 def replace_words(text):
@@ -39,6 +38,11 @@ def replace_words(text):
         replaced_sentence = ''.join(replaced_tokens)
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
+
+# Function to add text to clipboard
+def add_to_clipboard(text):
+    command = f'echo {text.strip()} | clip'
+    os.system(command)
 
 # Streamlit app
 st.title("ภาษาพูดเป็นภาษาทางการ")
@@ -61,7 +65,7 @@ with col1:
                 st.session_state.output_text = newer_text
                 st.toast("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
             except Exception as e:
-                st.toast("An error occurred: " + str(e))
+                st.toast(f"An error occurred: {str(e)}")
 
 # Initialize session state
 if 'output_text' not in st.session_state:
@@ -74,7 +78,7 @@ with col2:
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
         try:
-            pyclip.copy(st.session_state.output_text)  # Copy the output text (even if empty)
+            add_to_clipboard(st.session_state.output_text)  # Copy the output text (even if empty)
             if st.session_state.output_text.strip():
                 st.toast("คัดลอกข้อความสำเร็จ")
             else:
