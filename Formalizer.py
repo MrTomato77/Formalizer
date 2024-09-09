@@ -4,7 +4,6 @@ import os
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
-import subprocess
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
@@ -40,11 +39,6 @@ def replace_words(text):
         replaced_sentences.append(replaced_sentence)
     return ' '.join(replaced_sentences)
 
-# Clipboard function using subprocess
-def add_to_clipboard(text):
-    command = f'echo "{text.strip()}" | xclip -selection clipboard'
-    subprocess.run(command, shell=True)
-
 # Streamlit app
 st.title("ภาษาพูดเป็นภาษาทางการ")
 
@@ -76,10 +70,23 @@ if 'output_text' not in st.session_state:
 with col2:
     st.text_area("Output Text:", value=st.session_state.output_text, height=300)
 
-    # Copy to clipboard button always visible
+    # Copy to clipboard button using JavaScript
     if st.button("คัดลอก"):
         try:
-            add_to_clipboard(st.session_state.output_text)  # Copy the output text (even if empty)
+            # Use JavaScript to copy text to the clipboard
+            js_code = f"""
+            <script>
+            function copyToClipboard(text) {{
+                navigator.clipboard.writeText(text).then(function() {{
+                    console.log('Copied to clipboard');
+                }}, function(err) {{
+                    console.error('Could not copy text: ', err);
+                }});
+            }}
+            copyToClipboard(`{st.session_state.output_text}`);
+            </script>
+            """
+            st.components.v1.html(js_code)
             if st.session_state.output_text.strip():
                 st.toast("คัดลอกข้อความสำเร็จ")
             else:
