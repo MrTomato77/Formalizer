@@ -48,8 +48,6 @@ def copy_to_clipboard(text):
         if os.name == 'posix':
             if 'darwin' in os.uname().sysname.lower():
                 subprocess.run("pbcopy", text=True, input=text, check=True)
-            else:
-                subprocess.run("xclip -selection clipboard", text=True, input=text, shell=True, check=True)
         else:
             subprocess.run("clip", text=True, input=text, check=True, shell=True)
         return "ข้อความถูกคัดลอก"
