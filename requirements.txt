@@ -5,4 +5,4 @@ pyperclip
 python-crfsuite
 streamlit
 numpy==1.26.4
-jaraco.clipboard
+pyclip

@@ -4,7 +4,7 @@ import os
 from pythainlp.util import arabic_digit_to_thai_digit
 from pythainlp.tokenize import word_tokenize, sent_tokenize
 import spacy_thai
-from jaraco.clipboard import copy
+import pyclip
 
 # Load spacy-thai model
 nlp = spacy_thai.load()
@@ -25,9 +25,9 @@ try:
             else:
                 print("Skipping invalid row:", row)
 except FileNotFoundError:
-    st.toast(f"File not found: {file_path}")
+    st.toast("File not found: " + file_path)
 except Exception as e:
-    st.toast(f"An error occurred while reading the file: {str(e)}")
+    st.toast("An error occurred while reading the file: " + str(e))
 
 # Word replacing function
 def replace_words(text):
@@ -61,7 +61,7 @@ with col1:
                 st.session_state.output_text = newer_text
                 st.toast("ข้อความถูกเปลี่ยนเรียบร้อยแล้ว")
             except Exception as e:
-                st.toast(f"An error occurred: {str(e)}")
+                st.toast("An error occurred: " + str(e))
 
 # Initialize session state
 if 'output_text' not in st.session_state:
@@ -74,7 +74,7 @@ with col2:
     # Copy to clipboard button always visible
     if st.button("คัดลอก"):
         try:
-            copy(st.session_state.output_text)  # Copy the output text
+            pyclip.copy(st.session_state.output_text)  # Copy the output text (even if empty)
             if st.session_state.output_text.strip():
                 st.toast("คัดลอกข้อความสำเร็จ")
             else:
