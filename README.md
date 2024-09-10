@@ -8,6 +8,5 @@
 
 # Start program in venv
 
-- python -u ./Program.py
-- or
-- streamlit run App.py
+- (Tkinter) python -u ./Program.py
+- (WebApp) streamlit run App.py
