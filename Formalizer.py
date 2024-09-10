@@ -40,6 +40,7 @@ def replace_words(text):
     return ' '.join(replaced_sentences)
 
 # Streamlit app
+st.set_page_config(page_title="Formalizer")
 st.title("ภาษาพูดเป็นภาษาทางการ")
 
 # Create two columns
