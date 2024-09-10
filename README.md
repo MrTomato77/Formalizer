@@ -9,4 +9,4 @@
 # Start program in venv
 
 - (Tkinter) python -u ./Program.py
-- (WebApp) streamlit run App.py
+- (WebApp) streamlit run Formalizer.py
